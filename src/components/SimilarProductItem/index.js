@@ -20,7 +20,7 @@ const SimilarProductItem = props => {
       <img
         className="similar-image"
         src={modifDetails.imageUrl}
-        alt={modifDetails.title}
+        alt={`similar product ${modifDetails.title}`}
       />
       <h1 className="dark-color">{modifDetails.title}</h1>
       <p className="light-color">by {modifDetails.brand}</p>

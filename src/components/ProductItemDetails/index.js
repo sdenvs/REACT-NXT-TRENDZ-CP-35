@@ -67,7 +67,10 @@ class ProductItemDetails extends Component {
   }
 
   decreaseQuantity = () => {
-    this.setState(prev => ({quantity: prev.quantity - 1}))
+    const {quantity} = this.state
+    if (quantity > 1) {
+      this.setState(prev => ({quantity: prev.quantity - 1}))
+    }
   }
 
   successPage = () => {
@@ -89,7 +92,7 @@ class ProductItemDetails extends Component {
       <div className="bg-container">
         <div className="details-container">
           <div className="image-container">
-            <img className="details-image" src={imageUrl} alt={title} />
+            <img className="details-image" src={imageUrl} alt="product" />
           </div>
           <div className="deatail2-container">
             <h1 className="details-heading">{title}</h1>
@@ -106,12 +109,14 @@ class ProductItemDetails extends Component {
               <p className="details-review">{totalReviews} Reviews</p>
             </div>
             <p className="details-description">{description}</p>
-            <p className="dark-color">
-              Available: <span className="light-color">{availability}</span>
-            </p>
-            <p className="dark-color">
-              Brand: <span className="light-color">{brand}</span>
-            </p>
+            <div className="d-flex">
+              <p className="dark-color">Available:</p>
+              <p className="light-color pt-1 ml-2">{availability}</p>
+            </div>
+            <div className="d-flex">
+              <p className="dark-color">Brand:</p>
+              <p className="light-color pt-1 ml-2">{brand}</p>
+            </div>
             <hr />
             <div className="quanity-container">
               <button
@@ -154,7 +159,7 @@ class ProductItemDetails extends Component {
       <img
         className="w-75 mt-5"
         src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-error-view-img.png"
-        alt="error view"
+        alt="failure view"
       />
       <h2 className="m-4">Product Not Found</h2>
       <button className="btn btn-primary m-4">Continue Shopping</button>
