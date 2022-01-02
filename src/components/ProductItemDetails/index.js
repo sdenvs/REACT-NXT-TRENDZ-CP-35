@@ -73,6 +73,11 @@ class ProductItemDetails extends Component {
     }
   }
 
+  redirectToProducts = () => {
+    const {history} = this.props
+    history.replace('/products')
+  }
+
   successPage = () => {
     const {detailsData, quantity} = this.state
     const {
@@ -96,7 +101,7 @@ class ProductItemDetails extends Component {
           </div>
           <div className="deatail2-container">
             <h1 className="details-heading">{title}</h1>
-            <h1 className="details-price">Rs {price}/-</h1>
+            <p className="details-price">Rs {price}/-</p>
             <div className="container-2">
               <div className="rating-container1 bg-primary">
                 <p className="details-rating">{rating}</p>
@@ -162,7 +167,9 @@ class ProductItemDetails extends Component {
         alt="failure view"
       />
       <h2 className="m-4">Product Not Found</h2>
-      <button className="btn btn-primary m-4">Continue Shopping</button>
+      <button onClick={this.redirectToProducts} className="btn btn-primary m-4">
+        Continue Shopping
+      </button>
     </div>
   )
 
