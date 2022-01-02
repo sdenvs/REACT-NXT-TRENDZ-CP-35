@@ -15,7 +15,11 @@ const responseStateList = {
 }
 
 class ProductItemDetails extends Component {
-  state = {responseState: responseStateList.initial, detailsData: []}
+  state = {
+    responseState: responseStateList.initial,
+    detailsData: [],
+    quantity: 1,
+  }
 
   componentDidMount() {
     this.getdetailsofproducts()
@@ -58,8 +62,16 @@ class ProductItemDetails extends Component {
     }
   }
 
+  increaseQuantity = () => {
+    this.setState(prev => ({quantity: prev.quantity + 1}))
+  }
+
+  decreaseQuantity = () => {
+    this.setState(prev => ({quantity: prev.quantity - 1}))
+  }
+
   successPage = () => {
-    const {detailsData} = this.state
+    const {detailsData, quantity} = this.state
     const {
       availability,
       brand,
@@ -102,11 +114,19 @@ class ProductItemDetails extends Component {
             </p>
             <hr />
             <div className="quanity-container">
-              <button className="border-0 bg-transparent m-2" testid="plus">
+              <button
+                onClick={this.increaseQuantity}
+                className="border-0 bg-transparent m-2"
+                testid="plus"
+              >
                 <BsPlusSquare className="icon2" />
               </button>
-              <p>2</p>
-              <button className="border-0 bg-transparent m-2" testid="minus">
+              <p>{quantity}</p>
+              <button
+                onClick={this.decreaseQuantity}
+                className="border-0 bg-transparent m-2"
+                testid="minus"
+              >
                 <BsDashSquare className="icon2" />
               </button>
             </div>
