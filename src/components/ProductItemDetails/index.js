@@ -1,1 +1,169 @@
-// Write your code here
+import Cookies from 'js-cookie'
+import {Component} from 'react'
+import {BsPlusSquare, BsDashSquare, BsFillStarFill} from 'react-icons/bs'
+import Loader from 'react-loader-spinner'
+import SimilarProductItem from '../SimilarProductItem'
+import Header from '../Header'
+
+import './index.css'
+
+const responseStateList = {
+  initial: 'INITIAL',
+  progress: 'PROGRESS',
+  success: 'SUCCESS',
+  failed: 'FAILED',
+}
+
+class ProductItemDetails extends Component {
+  state = {responseState: responseStateList.initial, detailsData: []}
+
+  componentDidMount() {
+    this.getdetailsofproducts()
+  }
+
+  getdetailsofproducts = async () => {
+    this.setState({responseState: responseStateList.progress})
+    const {match} = this.props
+    const {id} = match.params
+    const jwtToken = Cookies.get('jwt_token')
+    const options = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      method: 'GET',
+    }
+
+    const response = await fetch(`https://apis.ccbp.in/products/${id}`, options)
+    console.log(response.ok)
+    if (response.ok) {
+      const data = await response.json()
+      const modifData = {
+        availability: data.availability,
+        brand: data.brand,
+        description: data.description,
+        id: data.id,
+        imageUrl: data.image_url,
+        price: data.price,
+        rating: data.rating,
+        similarProducts: data.similar_products,
+        title: data.title,
+        totalReviews: data.total_reviews,
+      }
+      this.setState({
+        responseState: responseStateList.success,
+        detailsData: modifData,
+      })
+    } else {
+      this.setState({responseState: responseStateList.failed})
+    }
+  }
+
+  successPage = () => {
+    const {detailsData} = this.state
+    const {
+      availability,
+      brand,
+      description,
+      id,
+      imageUrl,
+      price,
+      rating,
+      similarProducts,
+      title,
+      totalReviews,
+    } = detailsData
+    console.log(similarProducts)
+    return (
+      <div className="bg-container">
+        <div className="details-container">
+          <div className="image-container">
+            <img className="details-image" src={imageUrl} alt={title} />
+          </div>
+          <div className="deatail2-container">
+            <h1 className="details-heading">{title}</h1>
+            <h1 className="details-price">Rs {price}/-</h1>
+            <div className="container-2">
+              <div className="rating-container1 bg-primary">
+                <p className="details-rating">{rating}</p>
+                <img
+                  className="icon"
+                  src="https://assets.ccbp.in/frontend/react-js/star-img.png"
+                  alt="star"
+                />
+              </div>
+              <p className="details-review">{totalReviews} Reviews</p>
+            </div>
+            <p className="details-description">{description}</p>
+            <p className="dark-color">
+              Available: <span className="light-color">{availability}</span>
+            </p>
+            <p className="dark-color">
+              Brand: <span className="light-color">{brand}</span>
+            </p>
+            <hr />
+            <div className="quanity-container">
+              <button className="border-0 bg-transparent m-2" testid="plus">
+                <BsPlusSquare className="icon2" />
+              </button>
+              <p>2</p>
+              <button className="border-0 bg-transparent m-2" testid="minus">
+                <BsDashSquare className="icon2" />
+              </button>
+            </div>
+            <button className="btn btn-primary mt-2">ADD TO CART</button>
+          </div>
+        </div>
+        <h1 className="mt-5">Similar Product</h1>
+        <ul className="ulList">
+          {similarProducts.map(eachItem => (
+            <SimilarProductItem details={eachItem} key={eachItem.id} />
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  progressPage = () => (
+    <div className="text-center mt-5" testid="loader">
+      <Loader type="ThreeDots" color="#0b69ff" height={80} width={80} />
+    </div>
+  )
+
+  failedPage = () => (
+    <div className="text-center mt-5 p-5">
+      <img
+        className="w-75 mt-5"
+        src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-error-view-img.png"
+        alt="error view"
+      />
+      <h2 className="m-4">Product Not Found</h2>
+      <button className="btn btn-primary m-4">Continue Shopping</button>
+    </div>
+  )
+
+  renderResult = () => {
+    const {responseState} = this.state
+
+    switch (responseState) {
+      case responseStateList.success:
+        return this.successPage()
+      case responseStateList.failed:
+        return this.failedPage()
+      case responseStateList.progress:
+        return this.progressPage()
+      default:
+        return null
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <Header />
+        {this.renderResult()}
+      </div>
+    )
+  }
+}
+
+export default ProductItemDetails
